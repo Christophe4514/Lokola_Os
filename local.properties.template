@@ -1,0 +1,23 @@
+# Lokola OS - Configuration Locale
+# Copiez ce fichier en local.properties et ajustez les chemins
+
+# Chemin du SDK Android (Windows)
+sdk.dir=C\:\\Users\\VotreNom\\AppData\\Local\\Android\\Sdk
+
+# Chemin du JDK (optionnel si JAVA_HOME est défini)
+# java.home=C\:\\Program Files\\Java\\jdk-17
+
+# Augmenter la mémoire pour Gradle (important pour 8GB RAM)
+org.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -Dfile.encoding=UTF-8
+
+# Activer le cache offline si connexion instable
+# org.gradle.offline=true
+
+# Parallel builds (plus rapide)
+org.gradle.parallel=true
+
+# Daemon Gradle (garde le processus en mémoire)
+org.gradle.daemon=true
+
+# Configuration cache (accélère les builds suivants)
+org.gradle.configuration-cache=true

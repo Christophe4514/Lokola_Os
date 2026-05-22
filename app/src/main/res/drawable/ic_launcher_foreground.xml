@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Mirror/Lokola symbol -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,20
+                         L70,36
+                         L70,72
+                         L54,88
+                         L38,72
+                         L38,36
+                         Z"/>
+
+    <!-- Inner mirror reflection line -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M54,28
+                         L64,38
+                         L64,70
+                         L54,80
+                         L44,70
+                         L44,38
+                         Z"/>
+</vector>

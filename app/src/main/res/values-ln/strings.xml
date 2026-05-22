@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Lokola OS</string>
+
+    <!-- Onboarding Screens -->
+    <string name="onboarding_welcome_title">Mbote!</string>
+    <string name="onboarding_welcome_subtitle">Oyo ezali Congo - Telefone na yo, bozindo na yo</string>
+    <string name="onboarding_welcome_button">Moko na moko</string>
+
+    <string name="onboarding_datasaver_title">Bikisa ba données</string>
+    <string name="onboarding_datasaver_subtitle">Data Saver ezali kofungwama mpo na kokitisa mosala ya data ya mobile</string>
+    <string name="onboarding_datasaver_button">Moko na moko</string>
+
+    <string name="onboarding_language_title">Pona monɔkɔ na yo</string>
+    <string name="onboarding_language_subtitle">Pona monɔkɔ ya interface</string>
+    <string name="onboarding_language_french">Français</string>
+    <string name="onboarding_language_lingala">Lingala</string>
+    <string name="onboarding_language_button">Bandá</string>
+
+    <!-- Launcher -->
+    <string name="launcher_search">Luka...</string>
+    <string name="launcher_open_apps">Ba applications</string>
+
+    <!-- Data Saver Widget -->
+    <string name="datasaver_widget_title">Data Saver</string>
+    <string name="datasaver_widget_active">Efungwami</string>
+    <string name="datasaver_widget_inactive">Efungwami te</string>
+    <string name="datasaver_widget_data_used">Ba données esalemi</string>
+    <string name="datasaver_widget_data_saved">Ba données ebikisami</string>
+
+    <!-- Mayebi (Lokola Edu) -->
+    <string name="mayebi_title">Mayebi</string>
+    <string name="mayebi_subtitle">Yekola sans connexion</string>
+    <string name="mayebi_lessons">Ba leçons</string>
+    <string name="mayebi_progress">Progression</string>
+    <string name="mayebi_offline">Ezali disponible sans connexion</string>
+    <string name="mayebi_start_learning">Bandá koyekola</string>
+    <string name="mayebi_lesson_complete">Leçon esili!</string>
+
+    <!-- Lesson Categories -->
+    <string name="category_math">Matematiki</string>
+    <string name="category_french">Français</string>
+    <string name="category_science">Sciences</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Paramètres Lokola</string>
+    <string name="settings_datasaver">Data Saver</string>
+    <string name="settings_datasaver_description">Kokitisa mosala ya données</string>
+    <string name="settings_language">Monɔkɔ</string>
+    <string name="settings_language_description">Bobola monɔkɔ ya interface</string>
+    <string name="settings_about">Etali</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_made_in">Bosalami na Kinshasa 🇨🇩</string>
+    <string name="settings_contact">Contact WhatsApp</string>
+
+    <!-- Common -->
+    <string name="common_next">Moko na moko</string>
+    <string name="common_finish">Sila</string>
+    <string name="common_cancel">Annuler</string>
+    <string name="common_ok">OK</string>
+    <string name="common_close">Funga</string>
+    <string name="common_settings">Paramètres</string>
+    <string name="common_back">Zonga</string>
+</resources>
