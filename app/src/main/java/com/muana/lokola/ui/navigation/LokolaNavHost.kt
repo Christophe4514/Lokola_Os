@@ -16,6 +16,7 @@ import com.muana.lokola.ui.mayebi.LessonDetailScreen
 import com.muana.lokola.ui.mayebi.MayebiScreen
 import com.muana.lokola.ui.onboarding.OnboardingScreen
 import com.muana.lokola.ui.settings.SettingsScreen
+import com.muana.lokola.ui.wallpaper.WallpaperPickerScreen
 import com.muana.lokola.viewmodel.MainViewModel
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
@@ -50,9 +51,15 @@ fun LokolaNavHost(
         }
 
         composable(Screen.Launcher.route) {
+            val currentLanguage by viewModel.currentLanguage.collectAsState()
+            
             LauncherScreen(
                 onMayebiClick = { navController.navigate(Screen.Mayebi.route) },
-                onSettingsClick = { navController.navigate(Screen.Settings.route) }
+                onSettingsClick = { navController.navigate(Screen.Settings.route) },
+                currentLanguage = currentLanguage,
+                onLanguageChange = { newLanguage ->
+                    viewModel.changeLanguage(newLanguage)
+                }
             )
         }
 
@@ -78,7 +85,15 @@ fun LokolaNavHost(
 
         composable(Screen.Settings.route) {
             SettingsScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onWallpaperClick = { navController.navigate(Screen.WallpaperPicker.route) }
+            )
+        }
+
+        composable(Screen.WallpaperPicker.route) {
+            WallpaperPickerScreen(
+                wallpaperManager = viewModel.wallpaperManager,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

@@ -3,6 +3,7 @@ package com.muana.lokola.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.muana.lokola.util.LanguageManager
+import com.muana.lokola.util.WallpaperManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val languageManager: LanguageManager
+    private val languageManager: LanguageManager,
+    val wallpaperManager: WallpaperManager
 ) : ViewModel() {
 
     private val _isFirstLaunch = MutableStateFlow(true)

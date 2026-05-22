@@ -26,6 +26,7 @@ import com.muana.lokola.R
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
+    onWallpaperClick: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val dataSaverEnabled by viewModel.dataSaverEnabled.collectAsState()
@@ -87,6 +88,20 @@ fun SettingsScreen(
                         val newLanguage = if (currentLanguage == "fr") "ling" else "fr"
                         viewModel.changeLanguage(newLanguage)
                     }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Wallpaper Setting
+            SettingsSection(
+                title = "Personnalisation"
+            ) {
+                SettingsItem(
+                    icon = Icons.Default.Image,
+                    title = "Fond d'écran",
+                    description = "Changer l'arrière-plan du launcher",
+                    onClick = onWallpaperClick
                 )
             }
 

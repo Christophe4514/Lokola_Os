@@ -1,5 +1,6 @@
 package com.muana.lokola.ui.launcher
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,13 +22,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.muana.lokola.ui.components.DataSaverWidget
+import com.muana.lokola.ui.components.LanguageFAB
 import com.muana.lokola.ui.theme.*
+import com.muana.lokola.util.AppLauncher
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -49,62 +54,103 @@ data class QuickAction(
 @Composable
 fun LauncherScreen(
     onMayebiClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    currentLanguage: String = "fr",
+    onLanguageChange: (String) -> Unit = {}
 ) {
+    val context = LocalContext.current
     var dataSaverEnabled by remember { mutableStateOf(true) }
+    
+    // Load selected wallpaper
+    val wallpaperManager = remember { com.muana.lokola.util.WallpaperManager(context) }
+    val selectedWallpaperId by wallpaperManager.selectedWallpaperId.collectAsState(initial = 0)
     
     val currentDate = remember { LocalDate.now() }
     val formattedDate = remember {
         currentDate.format(DateTimeFormatter.ofPattern("EEEE d MMMM", Locale.FRENCH))
     }
     
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LauncherBackground)
-    ) {
-        // Header avec date et salutation
-        HeaderSection(formattedDate = formattedDate)
-        
-        // Data Saver Widget
-        DataSaverWidget(
-            isEnabled = dataSaverEnabled,
-            onToggle = { dataSaverEnabled = it }
-        )
-        
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        // Quick Actions (Rumba, Actualités)
-        QuickActionsRow()
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        // Grille d'applications
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
-        ) {
-            items(getCongoAppList()) { app ->
-                CongoAppIcon(
-                    app = app,
-                    onClick = {
-                        when (app.route) {
-                            "mayebi" -> onMayebiClick()
-                            "settings" -> onSettingsClick()
-                        }
-                    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Background Image
+        if (selectedWallpaperId > 0) {
+            val wallpapers = wallpaperManager.getAvailableWallpapers()
+            val resId = wallpapers.getOrNull(selectedWallpaperId - 1)
+            if (resId != null) {
+                val inputStream = context.resources.openRawResource(resId)
+                val bitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
+                inputStream.close()
+                
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = androidx.compose.ui.layout.ContentScale.Crop
                 )
             }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(LauncherBackground)
+            )
+        }
+
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Header avec date et salutation
+            HeaderSection(formattedDate = formattedDate)
+            
+            // Data Saver Widget
+            DataSaverWidget(
+                isEnabled = dataSaverEnabled,
+                onToggle = { dataSaverEnabled = it }
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Quick Actions (Rumba, Actualités)
+            QuickActionsRow()
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Grille d'applications
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(4),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                items(getCongoAppList()) { app ->
+                    CongoAppIcon(
+                        app = app,
+                        onClick = {
+                            when (app.route) {
+                                "mayebi" -> onMayebiClick()
+                                "settings" -> onSettingsClick()
+                                "phone" -> AppLauncher.launchDialer(context)
+                                "messages" -> AppLauncher.launchMessages(context)
+                                "browser" -> AppLauncher.launchBrowser(context)
+                                "camera" -> AppLauncher.launchCamera(context)
+                            }
+                        }
+                    )
+                }
+            }
+            
+            // Dock fixe en bas avec intents fonctionnels
+            CongoDockBar(context = context)
         }
         
-        // Dock fixe en bas
-        CongoDockBar()
+        // Language FAB - Bouton flottant pour switch langue
+        LanguageFAB(
+            currentLanguage = currentLanguage,
+            onLanguageChange = onLanguageChange
+        )
     }
 }
 
@@ -266,7 +312,7 @@ fun CongoAppIcon(
 }
 
 @Composable
-fun CongoDockBar() {
+fun CongoDockBar(context: Context) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = Color.White,
@@ -278,17 +324,28 @@ fun CongoDockBar() {
                 .padding(vertical = 12.dp, horizontal = 8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            DockItem(Icons.Default.Phone, "Téléphone", CongoGreen)
-            DockItem(Icons.Default.Message, "Messages", CongoBlue)
-            DockItem(Icons.Default.Public, "Internet", CongoDarkBlue)
-            DockItem(Icons.Default.PhotoCamera, "Photo", CongoRed)
+            DockItem(Icons.Default.Phone, "Téléphone", CongoGreen) {
+                AppLauncher.launchDialer(context)
+            }
+            DockItem(Icons.Default.Message, "Messages", CongoBlue) {
+                AppLauncher.launchMessages(context)
+            }
+            DockItem(Icons.Default.Public, "Internet", CongoDarkBlue) {
+                AppLauncher.launchBrowser(context)
+            }
+            DockItem(Icons.Default.PhotoCamera, "Photo", CongoRed) {
+                AppLauncher.launchCamera(context)
+            }
         }
     }
 }
 
 @Composable
-fun DockItem(icon: ImageVector, label: String, color: Color) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun DockItem(icon: ImageVector, label: String, color: Color, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable(onClick = onClick)
+    ) {
         Box(
             modifier = Modifier
                 .size(48.dp)
@@ -316,10 +373,10 @@ fun DockItem(icon: ImageVector, label: String, color: Color) {
 fun getCongoAppList(): List<AppItem> {
     return listOf(
         AppItem(1, "Mayebi", Icons.Default.School, Color(0xFF007FFF), "mayebi"),
-        AppItem(2, "Santé", Icons.Default.Favorite, Color(0xFFCE1021), null),
-        AppItem(3, "Agri", Icons.Default.Grass, Color(0xFF2E7D32), null),
-        AppItem(4, "Météo", Icons.Default.Cloud, Color(0xFF003F87), null),
-        AppItem(5, "Photos", Icons.Default.Image, Color(0xFFFF6F00), null),
+        AppItem(2, "Téléphone", Icons.Default.Phone, Color(0xFF4CAF50), "phone"),
+        AppItem(3, "Messages", Icons.Default.Message, Color(0xFF2196F3), "messages"),
+        AppItem(4, "Internet", Icons.Default.Public, Color(0xFF003F87), "browser"),
+        AppItem(5, "Photos", Icons.Default.Image, Color(0xFFFF6F00), "camera"),
         AppItem(6, "Musique", Icons.Default.MusicNote, Color(0xFFE91E63), null),
         AppItem(7, "Vidéos", Icons.Default.VideoLibrary, Color(0xFF9C27B0), null),
         AppItem(8, "Fichiers", Icons.Default.Folder, Color(0xFFFF8F00), null),
